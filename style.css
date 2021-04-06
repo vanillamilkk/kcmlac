@@ -1,0 +1,23 @@
+body {
+    background-color: #242424;
+    color: white;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+    text-align: center;
+}
+
+.form {
+    text-align: right;
+    display: inline-block;
+    margin-left: 30px;
+    margin-bottom: 20px;
+    position: fixed;
+    overflow: visible;
+}
+
+.logo {
+    display: inline-block;
+    margin-left: 10px;
+}

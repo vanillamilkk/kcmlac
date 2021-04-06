@@ -1,0 +1,19 @@
+{
+  "name": "kcmlac",
+  "version": "0.1.1",
+  "description": "KCML - Anti Cheat",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron . && exit 1"
+  },
+  "keywords": [],
+  "author": {
+    "name": "vanillamilkk",
+    "email": "support@kcml.my.id",
+    "url": "https://kcml.my.id/"
+  },
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "electron": "^12.0.2"
+  }
+}
