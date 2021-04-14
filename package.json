@@ -4,7 +4,9 @@
   "description": "KCML - Anti Cheat",
   "main": "main.js",
   "scripts": {
-    "start": "electron . && exit 1"
+    "start": "electron-forge start",
+    "package": "electron-forge package",
+    "make": "electron-forge make"
   },
   "keywords": [],
   "author": {
@@ -12,8 +14,56 @@
     "email": "support@kcml.my.id",
     "url": "https://kcml.my.id/"
   },
+  "build": {
+    "appId": "id.my.kcml.anticheat",
+    "linux": {
+      "target":"AppImage",
+      "category":"ActionGame",
+      "icon": "img/kcmlac.png"
+    },
+    "win": {
+      "target": "portable",
+      "icon": "icon.ico"
+    }
+  },
   "license": "GPL-3.0-or-later",
   "devDependencies": {
-    "electron": "^12.0.2"
+    "@electron-forge/cli": "^6.0.0-beta.54",
+    "@electron-forge/maker-deb": "^6.0.0-beta.54",
+    "@electron-forge/maker-rpm": "^6.0.0-beta.54",
+    "@electron-forge/maker-squirrel": "^6.0.0-beta.54",
+    "@electron-forge/maker-zip": "^6.0.0-beta.54",
+    "electron": "^12.0.2",
+    "electron-builder": "^22.10.5"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.0"
+  },
+  "config": {
+    "forge": {
+      "packagerConfig": {},
+      "makers": [
+        {
+          "name": "@electron-forge/maker-squirrel",
+          "config": {
+            "name": "kcmlac"
+          }
+        },
+        {
+          "name": "@electron-forge/maker-zip",
+          "platforms": [
+            "darwin"
+          ]
+        },
+        {
+          "name": "@electron-forge/maker-deb",
+          "config": {}
+        },
+        {
+          "name": "@electron-forge/maker-rpm",
+          "config": {}
+        }
+      ]
+    }
   }
 }

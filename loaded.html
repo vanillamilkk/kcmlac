@@ -16,10 +16,7 @@ GNU General Public License v3.0
     <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';" />
     <link rel="stylesheet" type="text/css" href=style.css>
     <script>
-        function onLogin(){
-            var id = document.forms["login"]["id"].value;
-            new Notification('KCML - Anti Cheat', {body: 'Berbuat curang akan mendapatkan sanksi!'});
-        }
+        const myNotification = 
     </script>
 </head>
 <body>
@@ -28,11 +25,8 @@ GNU General Public License v3.0
         <img src="img/kcmlac.png" width="100" height="100">
     </div>
     <div class="form">
-        <p>Silahkan masukkan ID peserta</p>
-        <form id="login" onSubmit="onLogin();">
-            <input type="text" name="id" id="id" placeholder="XXXXX-XXXX" required autofocus>
-                <button type="submit">Login</button>
-        </form>
+        <p>Login sebagai:</p>
+        <h3>vanillamilkk</h3>
     </div>
 </body>
 </html>
