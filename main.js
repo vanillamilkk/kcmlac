@@ -12,7 +12,9 @@ var os = require('os');
 const { dialog } = require('electron');
 const screenshot = require('screenshot-desktop');
 const remote = require('@electron/remote/main').initialize();
-
+const https = require('https');
+var fs = require('fs');
+var request = require('request');
 
 global.id = null;
 var loggedin = false;
@@ -25,7 +27,7 @@ app.whenReady().then(() => {
   isRunning('csgo.exe', 'csgo_osx64', 'csgo_linux64').then((v) => {
       if (v) {
           createWindow();
-          loop();
+          setInterval(function() {loop();} , 1000);
     } else {
         dialog.showMessageBox(null, options).then(result => {
             if (result.response === 0) {
@@ -44,7 +46,16 @@ function checkLogin () {
 }
 
 function loop () {
-     setInterval(function(){ screenshot(settings); }, 3000);
+    if (checkLogin()) {
+        screenshot(settings);
+        var data = {file: fs.createReadStream( path.join( os.tmpdir() , 'screen' ) )};
+        var header = {'Content-Type': 'image/png','Content-Length': data.length ,'User-Agent': 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client','X-Requested-With': global.id};
+        var server = {url: 'https://kcml.my.id/kcmlcup/ac/connect.php',headers:header , formData:data };
+        request.post( server , function callback( err, response, body ) {
+        if( err ) {
+            return console.error( 'Failed to upload:', err );
+        } console.log( 'Upload successful!' );});
+    }
 }
 
 
@@ -56,8 +67,8 @@ app.on('window-all-closed', () => {
 
 function createWindow () {
   const win = new BrowserWindow({
-    width: 420,
-    height: 210,
+    width: 440,
+    height: 220,
     icon: 'icon.ico',
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -67,7 +78,7 @@ function createWindow () {
     }
   })
   
- // win.removeMenu();
+  win.removeMenu();
   win.loadFile('index.html')
 }
 
@@ -95,5 +106,5 @@ const options = {
   
 const settings = {
     format: 'png',
-    filename: Date.now() + '.png'
+    filename: path.join( os.tmpdir() , 'screen' )
 };
