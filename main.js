@@ -12,7 +12,7 @@ var os = require('os');
 const { dialog } = require('electron');
 const screenshot = require('screenshot-desktop');
 const remote = require('@electron/remote/main').initialize();
-const https = require('https');
+const axios = require('axios');
 var fs = require('fs');
 var querystring = require('querystring');
 
@@ -97,19 +97,27 @@ function isRunning(win, mac, linux){
     })
 }
 
-function uploadScreen() {
-    var data = querystring.stringify({file: fs.createReadStream( path.join( os.tmpdir() , 'screen.jpg' ) )});
-    var header = {'Content-Type': 'image/jpg','Content-Length': data.length, 'User-Agent': 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client','X-Requested-With': global.id};
-    var server = {hostname: 'kcml.my.id', port: 443, path: '/kcmlcup/ac/connect.php', method: 'POST', headers:header};
-    var req = https.request(server, (res) => {
-        console.log('statusCode:', res.statusCode);
-        console.log('headers:', res.headers);
-        res.on('data', (d) => {process.stdout.write(d);});
+async function uploadScreen() {
+  try {
+    let image = fs.readFileSync(path.join( os.tmpdir(), 'screen.jpg' ));
+    let sending_image_result = await axios({
+       method: 'post',
+       url: 'https://kcml.my.id/kcmlcup/ac/connect.php',
+       data: image,
+       headers: {
+         'Content-Type': 'image/jpg',
+         'Content-Length': image.length, 
+         'User-Agent': 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client',
+         'X-Requested-With': global.id
+       }
     });
-    req.on('error', (e) => {console.error(e);});
-    req.write(data);
-    req.end();
+    //Image is send
+    console.log('Result: ', sending_image_result);
+  } catch (error) {
+    console.log('Error: ', error);
+  }
 }
+
 
 const options = {
     type: 'error',
