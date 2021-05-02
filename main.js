@@ -14,10 +14,14 @@ const screenshot = require('screenshot-desktop');
 const remote = require('@electron/remote/main').initialize();
 const https = require('https');
 var fs = require('fs');
-var request = require('request');
+var querystring = require('querystring');
+
 
 global.id = null;
 var loggedin = false;
+
+var now = new Date;
+var utc_timestamp = Date.UTC( now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds());
 
 ipcMain.on( "setMyGlobalVariable", ( event, myGlobalVariableValue ) => {
   global.id = myGlobalVariableValue;
@@ -27,7 +31,7 @@ app.whenReady().then(() => {
   isRunning('csgo.exe', 'csgo_osx64', 'csgo_linux64').then((v) => {
       if (v) {
           createWindow();
-          setInterval(function() {loop();} , 1000);
+          setInterval(function() {loop();} , 10000);
     } else {
         dialog.showMessageBox(null, options).then(result => {
             if (result.response === 0) {
@@ -37,24 +41,21 @@ app.whenReady().then(() => {
         )}});
 })
 
-function checkLogin () {
+function checkLogin() {
     if (global.id == null) {
+        console.log( now + ' User not detected!' );
         return false;
     } else {
+        console.log( now + ' User logged in' );
         return true;
     }
 }
 
-function loop () {
+function loop() {
     if (checkLogin()) {
         screenshot(settings);
-        var data = {file: fs.createReadStream( path.join( os.tmpdir() , 'screen' ) )};
-        var header = {'Content-Type': 'image/png','Content-Length': data.length ,'User-Agent': 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client','X-Requested-With': global.id};
-        var server = {url: 'https://kcml.my.id/kcmlcup/ac/connect.php',headers:header , formData:data };
-        request.post( server , function callback( err, response, body ) {
-        if( err ) {
-            return console.error( 'Failed to upload:', err );
-        } console.log( 'Upload successful!' );});
+        console.log( now + ' Shot taken!' );
+        setTimeout(  function() {uploadScreen();} , 3000 );
     }
 }
 
@@ -65,9 +66,9 @@ app.on('window-all-closed', () => {
   }
 })
 
-function createWindow () {
+function createWindow() {
   const win = new BrowserWindow({
-    width: 440,
+    width: 450,
     height: 220,
     icon: 'icon.ico',
     webPreferences: {
@@ -96,6 +97,20 @@ function isRunning(win, mac, linux){
     })
 }
 
+function uploadScreen() {
+    var data = querystring.stringify({file: fs.createReadStream( path.join( os.tmpdir() , 'screen.jpg' ) )});
+    var header = {'Content-Type': 'image/jpg','Content-Length': data.length, 'User-Agent': 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client','X-Requested-With': global.id};
+    var server = {hostname: 'kcml.my.id', port: 443, path: '/kcmlcup/ac/connect.php', method: 'POST', headers:header};
+    var req = https.request(server, (res) => {
+        console.log('statusCode:', res.statusCode);
+        console.log('headers:', res.headers);
+        res.on('data', (d) => {process.stdout.write(d);});
+    });
+    req.on('error', (e) => {console.error(e);});
+    req.write(data);
+    req.end();
+}
+
 const options = {
     type: 'error',
     buttons: ['Tutup'],
@@ -105,6 +120,6 @@ const options = {
   };
   
 const settings = {
-    format: 'png',
-    filename: path.join( os.tmpdir() , 'screen' )
+    format: 'jpg',
+    filename: path.join( os.tmpdir() , 'screen.jpg' )
 };

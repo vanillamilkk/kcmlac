@@ -1,6 +1,6 @@
 {
   "name": "kcmlac",
-  "version": "0.3.1",
+  "version": "0.4.5",
   "description": "KCML - Anti Cheat",
   "main": "main.js",
   "scripts": {
