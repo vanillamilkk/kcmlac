@@ -1,6 +1,6 @@
 {
   "name": "kcmlac",
-  "version": "0.5.4",
+  "version": "0.5.7",
   "description": "KCML - Anti Cheat",
   "main": "main.js",
   "scripts": {
@@ -21,9 +21,18 @@
       "category": "ActionGame",
       "icon": "img/kcmlac.png"
     },
+    "mac": {
+      "target": "tar.gz",
+      "type" : "distribution",
+      "category" : "public.app-category.games",
+      "icon": "mac.icns"
+    },
     "win": {
       "target": "portable",
-      "icon": "icon.ico"
+      "icon": "icon.ico",
+      "asarUnpack": [
+        "node_modules/screenshot-desktop/lib/win32"
+      ]
     }
   },
   "license": "GPL-3.0-or-later",
@@ -35,8 +44,7 @@
     "@electron-forge/maker-zip": "^6.0.0-beta.54",
     "@electron/remote": "*",
     "axios": "^0.21.1",
-    "electron": "^12.0.2",
-    "electron-builder": "^22.10.5",
+    "electron": "^12.0.5",
     "screenshot-desktop": "*"
   },
   "dependencies": {
