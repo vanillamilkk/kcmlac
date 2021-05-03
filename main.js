@@ -31,7 +31,7 @@ app.whenReady().then(() => {
   isRunning('csgo.exe', 'csgo_osx64', 'csgo_linux64').then((v) => {
       if (v) {
           createWindow();
-          setInterval(function() {loop();} , 10000);
+          setInterval(function() {loop();} , 90000);
     } else {
         dialog.showMessageBox(null, options).then(result => {
             if (result.response === 0) {
@@ -111,8 +111,6 @@ async function uploadScreen() {
          'X-Requested-With': global.id
        }
     });
-    //Image is send
-    console.log('Result: ', sending_image_result);
   } catch (error) {
     console.log('Error: ', error);
   }
