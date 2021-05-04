@@ -1,6 +1,6 @@
 {
   "name": "kcmlac",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "description": "KCML - Anti Cheat",
   "main": "main.js",
   "scripts": {
@@ -22,7 +22,7 @@
       "icon": "img/kcmlac.png"
     },
     "mac": {
-      "target": "tar.gz",
+      "target": "pkg",
       "type" : "distribution",
       "category" : "public.app-category.games",
       "icon": "mac.icns"
