@@ -5,7 +5,7 @@
  *  GNU General Public License v3.0
  */
 
-const { app, BrowserWindow, Menu, ipcMain} = require('electron');
+const { app, BrowserWindow, Menu, ipcMain, Notification} = require('electron');
 const path = require('path');
 const exec = require('child_process').exec;
 var os = require('os');
@@ -17,6 +17,7 @@ var fs = require('fs');
 var querystring = require('querystring');
 
 
+
 global.id = null;
 var loggedin = false;
 
@@ -25,7 +26,16 @@ var utc_timestamp = Date.UTC( now.getUTCHours(), now.getUTCMinutes(), now.getUTC
 
 ipcMain.on( "setMyGlobalVariable", ( event, myGlobalVariableValue ) => {
   global.id = myGlobalVariableValue;
+  console.log("Retrived id = " + global.id);
+  
 } );
+
+ipcMain.on('wrongLogin', (evt, arg) => {
+  dialog.showMessageBox(null, wrongLogin).then(result => {
+            if (result.response === 0) {
+                app.quit();
+            }
+        })});
 
 app.whenReady().then(() => {
   isRunning('csgo.exe', 'csgo_osx64', 'csgo_linux64').then((v) => {
@@ -33,7 +43,7 @@ app.whenReady().then(() => {
           createWindow();
           setInterval(function() {loop();} , 90000);
     } else {
-        dialog.showMessageBox(null, options).then(result => {
+        dialog.showMessageBox(null, noCSGO).then(result => {
             if (result.response === 0) {
                 app.quit();
             }
@@ -61,9 +71,7 @@ function loop() {
 
 
 app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') {
     app.quit()
-  }
 })
 
 function createWindow() {
@@ -105,7 +113,7 @@ async function uploadScreen() {
        url: 'https://kcml.my.id/kcmlcup/ac/connect.php',
        data: image,
        headers: {
-         'Content-Type': 'image/jpg',
+         'Content-Type': 'image/jpeg',
          'Content-Length': image.length, 
          'User-Agent': 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client',
          'X-Requested-With': global.id
@@ -117,13 +125,21 @@ async function uploadScreen() {
 }
 
 
-const options = {
+const noCSGO = {
     type: 'error',
     buttons: ['Tutup'],
     title: 'KCML-AC',
     message: 'CS:GO tidak terdeteksi',
     detail: 'Tidak dapat terhubung ke proses CS:GO, harap restart game atau PC!',
-  };
+};
+
+const wrongLogin = {
+    type: 'error',
+    buttons: ['Tutup'],
+    title: 'KCML-AC',
+    message: 'Login gagal!',
+    detail: 'User ID salah, harap cek kembali atau hubungi panitia!',
+};
   
 const settings = {
     format: 'jpg',

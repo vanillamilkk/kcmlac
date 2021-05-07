@@ -21,7 +21,7 @@ GNU General Public License v3.0
         function onLogin() {
             var id = document.forms["login"]["id"].value;
             sessionStorage.setItem('id', id);
-            ipcRenderer.send( "setMyGlobalVariable", id );
+            return true;
         }
           
 
@@ -34,7 +34,7 @@ GNU General Public License v3.0
     </div>
     <div class="form">
         <p>Silahkan masukkan ID peserta</p>
-        <form id="login" onSubmit="return onLogin();" action="loaded.html">
+        <form id="login"  method="POST" onSubmit="return onLogin();" action="https://kcml.my.id/kcmlcup/ac/login.php">
             <input type="text" name="id" id="id" placeholder="XXXXX-XXXX" required autofocus>
                 <button id ="submit" type="submit">Login</button>
         </form>
