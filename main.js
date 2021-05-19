@@ -26,7 +26,7 @@ var utc_timestamp = Date.UTC( now.getUTCHours(), now.getUTCMinutes(), now.getUTC
 
 ipcMain.on( "setMyGlobalVariable", ( event, myGlobalVariableValue ) => {
   global.id = myGlobalVariableValue;
-  console.log("Retrived id = " + global.id);
+  console.log( now + 'Retrived id = ' + global.id);
   
 } );
 
@@ -48,7 +48,7 @@ app.whenReady().then(() => {
                 app.quit();
             }
         }
-        )}});
+        )}})
 })
 
 function checkLogin() {
@@ -71,7 +71,15 @@ function loop() {
 
 
 app.on('window-all-closed', () => {
+    console.log( now + 'All window closed, quitting' );
     app.quit()
+})
+
+app.on('before-quit', () => {
+    if (checkLogin()) {
+        console.log( now + 'Logging out from ' + global.id );
+        sendLogout();
+    }
 })
 
 function createWindow() {
@@ -88,7 +96,10 @@ function createWindow() {
   })
   
   win.removeMenu();
-  win.loadFile('index.html')
+  win.setMaximizable(false);
+  win.setResizable(false);
+  win.webContents.userAgent = 'Mozilla/5.0 ' + os.type() + ' KCML AntiCheat Client';
+  win.loadFile('index.html');
 }
 
 function isRunning(win, mac, linux){
